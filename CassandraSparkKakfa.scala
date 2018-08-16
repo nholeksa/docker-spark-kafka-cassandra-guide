@@ -79,7 +79,7 @@ object CassandraSparkKafka {
 
     //kafka topics in -> out
     val outputParams = new Properties()
-    outputParams.put("bootstrap.servers", "<kafka.host.ip:9092")
+    outputParams.put("bootstrap.servers", "<kafka.host.ip>:9092")
     outputParams.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer")
     outputParams.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
 
