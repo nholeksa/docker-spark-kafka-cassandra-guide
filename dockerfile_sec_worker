@@ -9,7 +9,7 @@ RUN wget https://archive.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoo
  && rm spark-2.3.0-bin-hadoop2.7.tgz \
  && chmod 777 /spark
 
-COPY spark-start-worker.sh /spark-start-worker.sh
+COPY spark-start-sec-worker.sh /spark-start-worker.sh
 COPY securitySpark.jar /securitySpark.jar
 
 #Environment Variables and/or ports to expose??  
