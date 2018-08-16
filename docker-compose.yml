@@ -1,0 +1,73 @@
+#version of docker-compose
+version: "3"
+services:
+#name of service
+  spark-master:
+    #image that you wish to run
+    image: holeksaurus/spark-master:basic_new
+    #hostname needed for master for spark master url
+    hostname: spark-master
+    #command that runs when container starts
+    command: bash -c "/spark-start.sh && /bin/bash"
+    
+    #deploy options
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    #ports to allocate
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "6066:6066"
+      - "4040-4043"
+      - "8081"
+      - "8888"
+    #important to enable tty
+    tty: true
+    #ensures network deploys first
+    depends_on: 
+      - holeksanet
+    #network connections
+    networks:
+      - holeksanet
+
+  spark-worker-1:
+    image: holeksaurus/spark-worker:basic_new
+    tty: true
+    command: bash -c "/spark-start-worker.sh && /bin/bash"
+
+    deploy:
+      resources:
+        #resource limits
+        limits: 
+          cpus: '0.1'
+          memory: 1024M
+      # num of replicas of the service
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    depends_on:
+      - spark-master
+      - holeksanet
+    ports:
+      - "8081-8083"
+      - "8888"
+    #environment variables
+    environment:
+      SPARK_MASTER: "spark://spark-master:7077"
+    networks: 
+      - holeksanet
+
+#networks to create
+networks:
+  # network name
+  holeksanet:
+    #network type
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
